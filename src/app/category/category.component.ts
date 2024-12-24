@@ -3,11 +3,11 @@ import {Component, OnInit} from '@angular/core';
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
-  styleUrl: './category.component.scss'
+  styleUrls: ['./category.component.scss']
 })
 export class CategoryComponent implements OnInit {
 
-  categories: string[] = ['Category name'];
+  categories: string[] = [];
   ngOnInit() {
 
   }
@@ -15,9 +15,12 @@ export class CategoryComponent implements OnInit {
   addCategory(category:string){
     this.categories.push(category);
   }
-  updateCategoryName(event: Event, index: number) {
-    const inputValue = (event.target as HTMLInputElement).value;
-    this.categories[index] = inputValue;
+  updateCategoryName(event: any, index: number): void {
+    this.categories[index] = event.target.value;
     console.log(this.categories);
+  }
+
+  deleteCategory(i:number){
+    this.categories.splice(i , 1);
   }
 }
