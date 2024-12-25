@@ -1,10 +1,10 @@
-<div class="flex bg-gray-200 justify-between px-6">
+<div class="flex bg-gray-200 justify-between overflow-x-hidden px-6">
   <app-sidebar></app-sidebar>
 
   <div class="text-center  w-full">
     <h1>Task Board</h1>
     <router-outlet>
-
+      <div id="message-container" class="fixed top-4 right-4 z-50"></div>
     </router-outlet>
   </div>
 </div>
