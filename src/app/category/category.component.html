@@ -5,7 +5,7 @@
         <input type="text" class="text-lg font-semibold" [value]="category"
                (keydown.enter)="updateCategoryName($event, i)"/>
         <div class="flex items-center space-x-2">
-          <button class=" w-6 h-6  rounded-full hover:bg-gray-300">
+          <button id="addTask" (click)="toggleTaskForm()" class=" w-6 h-6  rounded-full hover:bg-gray-300">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
               <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -47,4 +47,6 @@
       +
     </button>
   </div>
+
+    <app-task-form *ngIf="showForm" (taskFormToggled)="toggleTaskForm()" ></app-task-form>
 </div>

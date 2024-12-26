@@ -8,7 +8,7 @@ import { CategoryService } from '../services/category.service';
 })
 export class CategoryComponent implements OnInit {
   categories: string[] = [];
-
+  showForm: boolean = false;
   constructor(private categoryService: CategoryService) {}
 
   ngOnInit(): void {
@@ -38,5 +38,9 @@ export class CategoryComponent implements OnInit {
   updateCategoryName(event: any, index: number): void {
     const result = this.categoryService.updateCategory(this.categories, index, event.target.value);
     this.showMessage(result.message, result.color);
+  }
+
+  toggleTaskForm() {
+    this.showForm = !this.showForm;
   }
 }
