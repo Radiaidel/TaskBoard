@@ -5,7 +5,7 @@
         <input type="text" class="text-lg font-semibold" [value]="category"
                (keydown.enter)="updateCategoryName($event, i)"/>
         <div class="flex items-center space-x-2">
-          <button id="addTask" (click)="toggleTaskForm()" class=" w-6 h-6  rounded-full hover:bg-gray-300">
+          <button id="addTask" (click)="toggleTaskForm(category)" class=" w-6 h-6  rounded-full hover:bg-gray-300">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
               <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -33,12 +33,31 @@
               </g>
             </svg>
           </button>
+
+
         </div>
       </div>
-      <div class="space-y-4">
+
+
+      <div class="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <ng-container *ngIf="tasks[category] && tasks[category].length > 0; else noTasks">
+          <app-task-card
+            *ngFor="let task of tasks[category]"
+            [task]="task"
+            (statusChanged)="onTaskStatusChanged($event)"
+            class="block mb-3"
+          ></app-task-card>
+        </ng-container>
+
+        <ng-template #noTasks>
+          <div class="text-center py-4 text-gray-500">
+            Aucune tâche dans cette catégorie
+          </div>
+        </ng-template>
       </div>
     </div>
   </ng-container>
+
 
   <div
     class="min-w-[300px] border-2 border-dashed border-gray-400 text-center rounded-lg shadow p-4 flex items-center justify-center">
@@ -48,5 +67,9 @@
     </button>
   </div>
 
-    <app-task-form *ngIf="showForm" (taskFormToggled)="toggleTaskForm()" ></app-task-form>
+    <app-task-form  *ngIf="showForm"
+                    [categoryId]="selectedCategoryId"
+                    (taskFormToggled)="toggleTaskForm('')">
+
+    </app-task-form>
 </div>

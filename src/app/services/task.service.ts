@@ -1,92 +1,64 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { Task, CreateTaskDTO, UpdateTaskDTO, TaskStatus } from '../models/task.model';
+import { Task, TaskStatus } from '../models/task.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
-  private STORAGE_KEY = 'tasks';
-  private tasksSubject = new BehaviorSubject<Task[]>(this.loadTasks());
+  private storageKey = 'tasks';
+  private tasksSubject = new BehaviorSubject<Task[]>([]);
+  tasks$ = this.tasksSubject.asObservable();
 
-  constructor() {}
-
-  private loadTasks(): Task[] {
-    const tasks = localStorage.getItem(this.STORAGE_KEY);
-    return tasks ? JSON.parse(tasks) : [];
+  constructor() {
+    this.loadTasks();
   }
 
-  private saveTasks(tasks: Task[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tasks));
+  private loadTasks(): void {
+    const storedTasks = localStorage.getItem(this.storageKey);
+    const tasks = storedTasks ? JSON.parse(storedTasks) : [];
     this.tasksSubject.next(tasks);
   }
 
-  getTasks(): Observable<Task[]> {
-    return this.tasksSubject.asObservable();
+  getTasks(): Task[] {
+    return this.tasksSubject.value;
   }
 
-  getTasksByCategory(categoryId: string): Observable<Task[]> {
-    return this.getTasks().pipe(
-      map(tasks => tasks.filter(task => task.categoryId === categoryId))
-    );
+  getTasksByCategory(categoryId: string): Task[] {
+    return this.getTasks().filter(task => task.categoryId === categoryId);
   }
 
-  createTask(taskDto: CreateTaskDTO): void {
-    const tasks = this.loadTasks();
+  addTask(taskData: Omit<Task, 'id' | 'createdAt' | 'status'>): { success: boolean; message: string; color: string } {
+    const tasks = this.getTasks();
+
     const newTask: Task = {
+      ...taskData,
       id: crypto.randomUUID(),
-      ...taskDto,
-      status: TaskStatus.NOT_STARTED,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: new Date().toISOString(),
+      status: 'not_started'
     };
-    this.saveTasks([...tasks, newTask]);
+
+    tasks.push(newTask);
+    this.saveTasks(tasks);
+
+    return {
+      success: true,
+      message: 'Tâche ajoutée avec succès !',
+      color: 'bg-green-500'
+    };
   }
 
-  updateTask(taskId: string, updateDto: UpdateTaskDTO): void {
-    const tasks = this.loadTasks();
-    const taskIndex = tasks.findIndex(task => task.id === taskId);
-
+  updateTaskStatus(taskId: string, newStatus: TaskStatus): void {
+    const tasks = this.getTasks();
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
     if (taskIndex !== -1) {
-      tasks[taskIndex] = {
-        ...tasks[taskIndex],
-        ...updateDto,
-        updatedAt: new Date()
-      };
+      tasks[taskIndex].status = newStatus;
       this.saveTasks(tasks);
     }
   }
 
-  deleteTask(taskId: string): void {
-    const tasks = this.loadTasks();
-    this.saveTasks(tasks.filter(task => task.id !== taskId));
-  }
-
-  getTaskStatistics(categoryId?: string): Observable<{
-    completedPercentage: number;
-    pendingPercentage: number;
-    overdueTasks: number;
-  }> {
-    return this.getTasks().pipe(
-      map(tasks => {
-        const filteredTasks = categoryId
-          ? tasks.filter(task => task.categoryId === categoryId)
-          : tasks;
-
-        const totalTasks = filteredTasks.length;
-        const completedTasks = filteredTasks.filter(
-          task => task.status === TaskStatus.COMPLETED
-        ).length;
-        const overdueTasks = filteredTasks.filter(
-          task => new Date(task.dueDate) < new Date() && task.status !== TaskStatus.COMPLETED
-        ).length;
-
-        return {
-          completedPercentage: totalTasks ? (completedTasks / totalTasks) * 100 : 0,
-          pendingPercentage: totalTasks ? ((totalTasks - completedTasks) / totalTasks) * 100 : 0,
-          overdueTasks
-        };
-      })
-    );
+  private saveTasks(tasks: Task[]): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(tasks));
+    this.tasksSubject.next(tasks);
   }
 }

@@ -1,18 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CategoryService } from '../services/category.service';
+import { TaskService } from '../services/task.service';
+import { Task } from '../models/task.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent implements OnInit , OnDestroy  {
   categories: string[] = [];
+  tasks: { [categoryId: string]: Task[] } = {};
   showForm: boolean = false;
-  constructor(private categoryService: CategoryService) {}
+  selectedCategoryId: string = '';
+  private taskSubscription: Subscription;
+
+
+  constructor(
+    private categoryService: CategoryService,
+    private taskService: TaskService
+  ) {
+    this.taskSubscription = this.taskService.tasks$.subscribe(tasks => {
+      this.categories.forEach(categoryId => {
+        this.tasks[categoryId] = tasks.filter(task => task.categoryId === categoryId);
+      });
+    });
+  }
 
   ngOnInit(): void {
     this.categories = this.categoryService.getCategories();
+  }
+
+  ngOnDestroy(): void {
+    if (this.taskSubscription) {
+      this.taskSubscription.unsubscribe();
+    }
+  }
+
+  loadTasks(): void {
+    this.categories.forEach(categoryId => {
+      this.tasks[categoryId] = this.taskService.getTasksByCategory(categoryId);
+    });
+  }
+
+  toggleTaskForm(categoryId: string): void {
+    this.selectedCategoryId = categoryId;
+    this.showForm = !this.showForm;
+  }
+
+  onTaskStatusChanged(event: {taskId: string, newStatus: Task['status']}): void {
+    this.taskService.updateTaskStatus(event.taskId, event.newStatus);
+    this.loadTasks();
   }
 
   showMessage(message: string, color: string): void {
@@ -40,7 +79,5 @@ export class CategoryComponent implements OnInit {
     this.showMessage(result.message, result.color);
   }
 
-  toggleTaskForm() {
-    this.showForm = !this.showForm;
-  }
+
 }

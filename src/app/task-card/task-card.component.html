@@ -1,1 +1,50 @@
-<p>task-card works!</p>
+<div class="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200">
+  <div class="flex justify-between items-center mb-3">
+    <span
+      [ngClass]="{
+        'bg-red-100 text-red-800': task.priority === 'high',
+        'bg-yellow-100 text-yellow-800': task.priority === 'medium',
+        'bg-green-100 text-green-800': task.priority === 'low'
+      }"
+      class="px-2 py-1 text-xs font-semibold rounded-full"
+    >
+      {{ task.priority | uppercase }}
+    </span>
+  </div>
+
+  <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ task.title }}</h3>
+
+  <p *ngIf="task.description" class="text-gray-600 text-sm mb-3">
+    {{ task.description }}
+  </p>
+
+  <div class="flex items-center justify-between text-sm text-gray-500">
+    <div class="flex items-center gap-1">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M8 7V3m8 4V3m-9 8h10m-6 5h6m-6 0H6m3 5h6m-6 0H6"
+        />
+      </svg>
+      {{ task.dueDate | date: 'dd/MM/yyyy' }}
+    </div>
+
+    <select
+      [ngModel]="task.status"
+      (ngModelChange)="onStatusChange($event)"
+      class="text-sm border rounded-md px-2 py-1"
+    >
+      <option value="not_started">Non commencé</option>
+      <option value="in_progress">En cours</option>
+      <option value="completed">Terminé</option>
+    </select>
+  </div>
+</div>
