@@ -9,27 +9,31 @@ import { Subscription } from 'rxjs';
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent implements OnInit , OnDestroy  {
+export class CategoryComponent implements OnInit, OnDestroy {
   categories: string[] = [];
   tasks: { [categoryId: string]: Task[] } = {};
   showForm: boolean = false;
   selectedCategoryId: string = '';
-  private taskSubscription: Subscription;
-
+  private taskSubscription!: Subscription;
+  taskToEdit: Task | null = null;
 
   constructor(
     private categoryService: CategoryService,
     private taskService: TaskService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.categories = this.categoryService.getCategories();
+    const initialTasks = this.taskService.getTasks();
+    this.categories.forEach(categoryId => {
+      this.tasks[categoryId] = initialTasks.filter(task => task.categoryId === categoryId);
+    });
+
     this.taskSubscription = this.taskService.tasks$.subscribe(tasks => {
       this.categories.forEach(categoryId => {
         this.tasks[categoryId] = tasks.filter(task => task.categoryId === categoryId);
       });
     });
-  }
-
-  ngOnInit(): void {
-    this.categories = this.categoryService.getCategories();
   }
 
   ngOnDestroy(): void {
@@ -44,14 +48,25 @@ export class CategoryComponent implements OnInit , OnDestroy  {
     });
   }
 
-  toggleTaskForm(categoryId: string): void {
+  toggleTaskForm(categoryId: string, task: Task | null = null): void {
     this.selectedCategoryId = categoryId;
     this.showForm = !this.showForm;
+    this.taskToEdit = task;
   }
 
-  onTaskStatusChanged(event: {taskId: string, newStatus: Task['status']}): void {
+  onTaskStatusChanged(event: { taskId: string, newStatus: Task['status'] }): void {
     this.taskService.updateTaskStatus(event.taskId, event.newStatus);
     this.loadTasks();
+  }
+
+  onTaskDeleted(taskId: string): void {
+    this.loadTasks();
+  }
+
+  onTaskEdited(task: Task): void {
+    this.selectedCategoryId = task.categoryId;
+    this.showForm = true;
+    this.taskToEdit = task;
   }
 
   showMessage(message: string, color: string): void {
@@ -70,7 +85,7 @@ export class CategoryComponent implements OnInit , OnDestroy  {
   }
 
   deleteCategory(index: number): void {
-   const  result = this.categoryService.deleteCategory(this.categories, index);
+    const result = this.categoryService.deleteCategory(this.categories, index);
     this.showMessage(result.message, result.color);
   }
 
@@ -78,6 +93,4 @@ export class CategoryComponent implements OnInit , OnDestroy  {
     const result = this.categoryService.updateCategory(this.categories, index, event.target.value);
     this.showMessage(result.message, result.color);
   }
-
-
 }

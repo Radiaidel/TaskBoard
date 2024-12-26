@@ -1,4 +1,4 @@
-<div class="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200">
+<div class="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200  text-start">
   <div class="flex justify-between items-center mb-3">
     <span
       [ngClass]="{
@@ -10,6 +10,10 @@
     >
       {{ task.priority | uppercase }}
     </span>
+    <div class="flex space-x-2">
+      <button (click)="editTask()" class="text-blue-500 hover:text-blue-700">Edit</button>
+      <button (click)="deleteTask()" class="text-red-500 hover:text-red-700">Delete</button>
+    </div>
   </div>
 
   <h3 class="font-semibold text-lg text-gray-900 mb-2">{{ task.title }}</h3>
