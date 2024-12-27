@@ -1,27 +1,94 @@
-# TaskBoard
+# 📋 TaskBoard - Application de Gestion de Tâches
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.11.
+## 📝 Présentation
 
-## Development server
+TaskMaster est une application moderne et responsive de gestion de tâches construite avec Angular 17. Elle permet aux utilisateurs de gérer efficacement leurs tâches avec des catégories personnalisables, une recherche en temps réel et un tableau de bord interactif.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## ⭐ Fonctionnalités
 
-## Code scaffolding
+- **🎯 Gestion des Tâches**
+  - ✨ Création, modification et suppression des tâches
+  - 🔥 Niveaux de priorité (Haute, Moyenne, Basse)
+  - ✅ Suivi de l'état d'avancement
+  - 📅 Définition des dates d'échéance
+  - 📝 Descriptions optionnelles
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **📁 Système de Catégories**
+  - 📂 Création de catégories personnalisées
+  - 🗂️ Organisation des tâches par catégorie
+  - ✏️ Modification et suppression des catégories
 
-## Build
+- **🔍 Recherche**
+  - 🔎 Recherche en temps réel
+  - 📄 Recherche par titre et description
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **📊 Tableau de Bord**
+  - 📈 Pourcentage de tâches accomplies
+  - ⏰ Suivi des tâches en retard
+  - 📉 Distribution des statuts
 
-## Running unit tests
+## 🛠️ Stack Technique
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- ⚡ Angular 17
+- 📘 TypeScript
+- 🎨 Tailwind CSS
+- 🔄 RxJS
 
-## Running end-to-end tests
+## 🚀 Démarrage Rapide
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+1. **Cloner le dépôt**
+   ```bash
+   git clone [url-du-dépôt]
+   ```
 
-## Further help
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   ```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+3. **Lancer le serveur de développement**
+   ```bash
+   npm start
+   ```
+
+4. **Accéder à l'application**
+   ```
+   Naviguer vers http://localhost:4200
+   ```
+
+## ✅ Règles de Validation
+
+- ⚠️ Pas de dates d'échéance dans le passé
+- 📏 Limites de longueur pour les titres et descriptions
+- 🚫 Pas de doublons de catégories
+- ❗ Validation des champs obligatoires
+
+## 📱 Design Responsive
+
+L'application est entièrement responsive et optimisée pour :
+- 🖥️ Écrans d'ordinateur
+- 📱 Tablettes
+- 📱 Appareils mobiles
+
+## 💻 Caractéristiques Techniques
+
+- 🏗️ Architecture basée sur les composants
+- 📝 Formulaires réactifs
+- 🔄 Gestion d'état avec RxJS
+- 🛣️ Routage Angular
+- 🔧 Pipes personnalisés
+- 🔌 Gestion des données par services
+- 🔗 Liaison de données bidirectionnelle
+- ⚡ Mises à jour en temps réel
+
+## 🤝 Contribution
+
+1. Fork du dépôt
+2. Création de votre branche
+3. Commit de vos modifications
+4. Push vers la branche
+5. Création d'une Pull Request
+
+## 📄 Licence
+
+Ce projet est sous licence MIT - voir le fichier LICENSE pour plus de détails.
