@@ -1,1 +1,25 @@
-<p>dashboard works!</p>
+<div class="p-4">
+    <h1 class="text-2xl font-semibold mb-4">Dashboard</h1>
+  
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Total Tasks</h2>
+        <p class="text-2xl">{{ totalTasks }}</p>
+      </div>
+  
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Completed Tasks</h2>
+        <p class="text-2xl">{{ completedTasks }} ({{ completedPercentage | number: '1.0-2' }}%)</p>
+      </div>
+  
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Pending Tasks</h2>
+        <p class="text-2xl">{{ pendingTasks }} ({{ pendingPercentage | number: '1.0-2' }}%)</p>
+      </div>
+  
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Overdue Tasks</h2>
+        <p class="text-2xl">{{ overdueTasks }}</p>
+      </div>
+    </div>
+  </div>
