@@ -38,7 +38,7 @@ TaskMaster est une application moderne et responsive de gestion de tâches const
 
 1. **Cloner le dépôt**
    ```bash
-   git clone [url-du-dépôt]
+   git clone https://github.com/Radiaidel/TaskBoard.git
    ```
 
 2. **Installer les dépendances**
