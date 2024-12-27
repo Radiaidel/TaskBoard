@@ -3,6 +3,8 @@ import { CategoryService } from '../services/category.service';
 import { TaskService } from '../services/task.service';
 import { Task } from '../models/task.model';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-category',
@@ -18,7 +20,7 @@ export class CategoryComponent implements OnInit, OnDestroy, OnChanges {
   private taskSubscription!: Subscription;
   taskToEdit: Task | null = null;
 
-  constructor(
+  constructor(private route: ActivatedRoute,
     private categoryService: CategoryService,
     private taskService: TaskService
   ) {}
@@ -34,6 +36,13 @@ export class CategoryComponent implements OnInit, OnDestroy, OnChanges {
       this.categories.forEach(categoryId => {
         this.tasks[categoryId] = tasks.filter(task => task.categoryId === categoryId);
       });
+    });
+
+    this.route.queryParams.subscribe(params => {
+      this.searchQuery = params['search'] || '';
+      if (this.searchQuery) {
+        this.searchTasks();
+      }
     });
   }
 

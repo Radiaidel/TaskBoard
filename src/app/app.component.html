@@ -12,7 +12,8 @@
         />
         <button (click)="searchTasks()" class="px-4 py-2 bg-blue-800 text-white rounded-lg ml-2">Search</button>
       </div>
-      <app-category [searchQuery]="searchQuery"></app-category>
+      <router-outlet *ngIf="router.url === '/Home'"></router-outlet>
+      <app-category *ngIf="router.url.startsWith('/Tasks')" [searchQuery]="searchQuery"></app-category>
     </div>
     <div id="message-container" class="fixed top-4 right-4 z-50"></div>
   </div>

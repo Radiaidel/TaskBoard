@@ -1,29 +1,19 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { CategoryComponent } from './category/category.component';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   searchQuery: string = '';
-  @ViewChild(CategoryComponent) categoryComponent!: CategoryComponent;
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.categoryComponent) {
-        this.categoryComponent.searchQuery = this.searchQuery;
-      }
-    });
-  }
+  constructor(public router: Router) {}
 
   searchTasks(): void {
-    if (this.categoryComponent) {
-      this.categoryComponent.searchQuery = this.searchQuery;
-      this.categoryComponent.searchTasks();
-    } else {
-      console.error('CategoryComponent not found');
-    }
+    this.router.navigate(['/Tasks'], {
+      queryParams: { search: this.searchQuery }
+    });
   }
 }
