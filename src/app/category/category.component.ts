@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CategoryService } from '../services/category.service';
 import { TaskService } from '../services/task.service';
 import { Task } from '../models/task.model';
@@ -9,7 +9,8 @@ import { Subscription } from 'rxjs';
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent implements OnInit, OnDestroy {
+export class CategoryComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() searchQuery: string = '';
   categories: string[] = [];
   tasks: { [categoryId: string]: Task[] } = {};
   showForm: boolean = false;
@@ -34,6 +35,12 @@ export class CategoryComponent implements OnInit, OnDestroy {
         this.tasks[categoryId] = tasks.filter(task => task.categoryId === categoryId);
       });
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['searchQuery']) {
+      this.searchTasks();
+    }
   }
 
   ngOnDestroy(): void {
@@ -67,6 +74,22 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.selectedCategoryId = task.categoryId;
     this.showForm = true;
     this.taskToEdit = task;
+  }
+
+  searchTasks(): void {
+    if (this.searchQuery) {
+      this.taskService.searchTasks(this.searchQuery).subscribe(searchResults => {
+        this.tasks = {};
+        searchResults.forEach(task => {
+          if (!this.tasks[task.categoryId]) {
+            this.tasks[task.categoryId] = [];
+          }
+          this.tasks[task.categoryId].push(task);
+        });
+      });
+    } else {
+      this.loadTasks();
+    }
   }
 
   showMessage(message: string, color: string): void {

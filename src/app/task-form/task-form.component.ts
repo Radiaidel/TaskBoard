@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskService } from '../services/task.service';
-import { Task, TaskPriority } from '../models/task.model';
+import { Task } from '../models/task.model';
 
 @Component({
   selector: 'app-task-form',
@@ -44,15 +44,16 @@ export class TaskFormComponent implements OnChanges {
       };
 
       if (this.task) {
-        // Update existing task
         const result = this.taskService.updateTask(this.task.id, taskData);
+        this.showMessage(result.message, result.color);
+
         if (result.success) {
           this.taskForm.reset();
           this.toggleTaskForm();
         }
       } else {
-        // Add new task
         const result = this.taskService.addTask(taskData);
+        this.showMessage(result.message, result.color);
         if (result.success) {
           this.taskForm.reset();
           this.toggleTaskForm();
@@ -65,6 +66,16 @@ export class TaskFormComponent implements OnChanges {
           control.markAsTouched();
         }
       });
+    }
+  }
+
+  showMessage(message: string, color: string): void {
+    const container = document.getElementById('message-container');
+    if (container) {
+      container.innerHTML = `<div class="p-4 mb-4 text-white ${color} rounded-xl">
+                               ${message}
+                             </div>`;
+      setTimeout(() => (container.innerHTML = ''), 3000);
     }
   }
 }

@@ -1,10 +1,19 @@
 <div class="flex bg-gray-200 justify-between overflow-x-hidden px-6">
   <app-sidebar></app-sidebar>
-
-  <div class="text-center  w-full">
-    <h1>Task Board</h1>
-    <router-outlet>
-      <div id="message-container" class="fixed top-4 right-4 z-50"></div>
-    </router-outlet>
+  <div class="w-full flex bg-gray-200 justify-between overflow-x-hidden px-6">
+    <div class="text-center w-full">
+      <div class="my-4">
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="searchTasks()"
+          class="px-4 py-2 border rounded-lg w-1/2"
+        />
+        <button (click)="searchTasks()" class="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2">Search</button>
+      </div>
+      <app-category [searchQuery]="searchQuery"></app-category>
+    </div>
+    <div id="message-container" class="fixed top-4 right-4 z-50"></div>
   </div>
 </div>

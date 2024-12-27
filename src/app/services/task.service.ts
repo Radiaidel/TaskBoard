@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Task, TaskStatus } from '../models/task.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,9 @@ export class TaskService {
 
   private loadTasks(): void {
     const storedTasks = localStorage.getItem(this.storageKey);
-    const tasks = storedTasks ? JSON.parse(storedTasks) : [];
-    this.tasksSubject.next(tasks);
+    if (storedTasks) {
+      this.tasksSubject.next(JSON.parse(storedTasks));
+    }
   }
 
   getTasks(): Task[] {
@@ -111,12 +112,22 @@ export class TaskService {
   }
 
   updateTaskStatus(taskId: string, newStatus: TaskStatus): void {
-    const tasks = this.getTasks();
-    const taskIndex = tasks.findIndex(t => t.id === taskId);
+    const tasks = this.tasksSubject.getValue();
+    const taskIndex = tasks.findIndex(task => task.id === taskId);
     if (taskIndex !== -1) {
       tasks[taskIndex].status = newStatus;
-      this.saveTasks(tasks);
+      this.tasksSubject.next(tasks);
+      localStorage.setItem(this.storageKey, JSON.stringify(tasks));
     }
+  }
+
+  searchTasks(query: string): Observable<Task[]> {
+    const tasks = this.tasksSubject.getValue();
+    const filteredTasks = tasks.filter(task =>
+      task.title.toLowerCase().includes(query.toLowerCase()) ||
+      (task.description?.toLowerCase().includes(query.toLowerCase()) ?? false)
+    );
+    return of(filteredTasks);
   }
 
   private saveTasks(tasks: Task[]): void {
